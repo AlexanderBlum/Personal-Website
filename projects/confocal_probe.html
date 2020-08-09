@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" async   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+<link rel="stylesheet" type="text/css" href="../projects/projects_stylesheet.css">
+<meta name="keywords" content="alex, alexander, blum, resume, engineering, mechanical, precision">
+<meta charset="utf-8">
+</head>
+
+<body>
+<h1 align="center"> CONFOCAL THICKNESS MEASUREMENT </h1>
+<div id="toc_container">
+<h2 align="center"> TABLE OF CONTENTS </h2>
+<ul class="toc_list">
+<li><a href="#summary" id="summary_toc">0. Summary</a></li>
+<li><a href="#voice_coils" id="voice_coils_toc">1. Voice Coils</a>
+  <ul><li><a href="#vc_theory" id="vc_theory_toc">1.1 Theory of Operation</a></li></ul>
+  <ul><li><a href="#vc_circuit" id="vc_circuit_toc">1.2 Driving Circuit</a></li></ul>
+</li>
+<li><a href="#disp_sensors" id="disp_sensors_toc">2. Displacement Sensors</a>
+  <ul><li><a href="#cap_probe" id="cap_probe_toc">2.1 Capacitance Probe</a></li></ul>
+  <ul><li><a href="#knife_edge" id="knife_edge_toc">2.2 Knife Edge Sensor</a></li></ul>
+</li>
+<li><a href="#probe_design" id="probe_design_toc">3. Confocal Probe</a></li>
+<li><a href="#flexure_design" id="flexure_design_toc">4. Flexure Stage</a></li>
+<li><a href="#system_analysis" id="system_analysis_toc">5. Analysis of Electromechanical System</a></li>
+<li><a href="#daq_design" id="daq_design_toc">6. Data Acquisition</a></li>
+<li><a href="#manuf_cal" id="manuf_cal_toc">7. Manufacturing and Testing</a></li>
+<li><a href="#meas_uncertainty" id="meas_uncertainty_toc">8. Measurement Uncertainty</a></li>
+
+</ul>
+</div>
+	<h3 id="summary"><a href="#summary_toc">0. Summary</a></h3>
+	<p>Flexure based confocal scanning instrument for measuringthickenss of transparent plates</p>
+	<h3 id="voice_coils"><a href="#voice_coils_toc">1. Voice Coils</a></h3>
+	<p> 
+	The designs below are both driven by voice coils. These are a type of linear motor that uses the Lorentz force to drive a stage.
+	Voice coil actuators are frictionless, have negligible hysteresis, and can be used to position a stage with extremely high precision.
+	Displacement can be up to several inches, and force generated ranges from ounces to hundreds of pounds. 
+	The coil used in these designs has a peak force of 9~lbf and maximum displacement of $\pm$ 0.12~inches. 
+	There are multiple common designs but all of them operate on the same basic principles. 
+	Shown here is a 'moving coil' design.
+	</p>
+	<h4 id="vc_theory"><a href="#vc_theory_toc">1.1 Theory of Operation</a></h4>
+	<p>
+	The stationary assembly consists of a magnet mounted on a ferrous cup that helps guide the magnetic field. 
+	The moving assembly is a length of wire (the coil) tightly wound around a plastic 'spool'. 
+	Current travels through the wire perpendicular to the magnetic field, 
+	producing a force that acts on the moving assembly according to the formula \(\vec{F} = \vec{I}l \times \vec{B}\),
+	where \(\vec{F}\) is the force produced,  \(\vec{B}\) is the magnetic field strength, 
+	current in the wire is \(\vec{I}\), and \(l\) is the total length of wire. 
+	These relationships are shown in the first two figures.
+	</p>
+	<p>
+	In this formula the magnetic field and wire length terms are fixed, 
+	so the only way we can vary the actuator force is by changing the current going into the wire. 
+	The simplest way to do this is with power transistors, or a power operational amplifier. 
+	These designs use a Texas Instruments OPA549SG3 power op amp to create an output current directly proportional to an input current. 
+	The design used is shown in Figure X. Current output for this circuit design is $$i = \frac{R_2}{R_5 (R_1+R_2)} V_i$$
+	</p>
+	<img src="../images/voice_coils.png">
+	<p>
+	The voice coil can also be analyzed as an electro-mechanical system consisting of an RLC circuit and spring-mass damper.
+	This will be done below after discussing the flexure assembly.
+	</p>
+	<h4 id="vc_circuit"><a href="#vc_circuit_toc">1.2 Driving Circuit</a></h4>
+	<h3 id="disp_sensors"><a href="#disp_sensors_toc">2. Displacement Sensors</a></h3>
+	<p>
+	Two displacement sensors were used in these projects: 
+	Lion Precision capacitance probes and homebrew knife-edge sensors.	
+	<h4 id="cap_probe"><a href="#cap_probe_toc">2.1 Capacitance Probe</a></h4>
+	Capacitance probes use the definition of a classical parallel-plate capacitor, \(C = \frac{\epsilon A}{d}\), 
+	as a tool for measuring displacement. \(A\) is the sensor area, \(epsilon\) is the dielectric constant, 
+	and \(d\) is the distance between plates. This equation does not address the effects of stray capacitance, 
+	second-order effects, and other deviations from the ideal model. 
+	A guard electrode is used to deal with stray capacitance and collimate the electric field lines between probe and target, 
+	making the probe behave more closely to an ideal parallel plate capacitor (Figure). 
+	From the equation we can see that larger sensors will create greater changes in capacitance for a given distance. 
+	We are measuring distance indirectly via capacitance, so a quality calibration is important. 
+	For this application the dielectric is air and \(\epsilon\) is a function of temperature, pressure, and humidity. 
+	If an application is extremely high precision this must be accounted for.
+	A well-designed capacitance sensor system will have a resolution of single-digit nanometers or better. 
+	This is not the precision of the system - linearity, noise, environmental effects, 
+	and misalignment must all be considered when evaluating measurement uncertainty. 
+	The extremely high resolution and non-contact nature of capacitance probes makes the ideal for closed loop control of short travel micro-positioning systems. 
+	The probes used here have a range of 500~\textmu m and resolution of 10~nm at 15~kHz.
+	</p>
+	<img src="../images/cap_probe.svg">
+	<h4 id="knife_edge"><a href="#knife_edge_toc">2.2 Knife Edge Sensor</a></h4>
+	<h3 id="probe_design"><a href="#probe_design_toc">3. Confocal Probe Sensor</a></h3>
+	<h3 id="flexure_design"><a href="#flexure_design_toc">4. Flexure Stage</a></h3>
+	<h3 id="system_analysis"><a href="#system_analysis_toc">5. Analysis of Electromechanical System</a></h3>
+	<h3 id="daq_design"><a href="#daq_design_toc">6. Data Acquisition</a></h3>
+	<h3 id="manuf_cal"><a href="#manuf_cal_toc">7.Manufacturing and Testing</a></h3>
+	<h3 id="meas_uncertainty"><a href="#meas_uncertainty_toc">8. Measurement Uncertainty</a></h3>
+</body>
+</html>
