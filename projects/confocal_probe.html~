@@ -9,48 +9,56 @@
 
 <body>
 <h1 align="center"> CONFOCAL THICKNESS MEASUREMENT </h1>
+<h3 align="center"> Alex Blum, Kumar Arumugam, Jacob Cole, John Borek</h3>
 <div id="toc_container">
 <h2 align="center"> TABLE OF CONTENTS </h2>
 <ul class="toc_list">
-<li><a href="#summary" id="summary_toc">0. Summary</a></li>
-<li><a href="#voice_coils" id="voice_coils_toc">1. Voice Coils</a>
-  <ul><li><a href="#vc_theory" id="vc_theory_toc">1.1 Theory of Operation</a></li></ul>
-  <ul><li><a href="#vc_circuit" id="vc_circuit_toc">1.2 Driving Circuit</a></li></ul>
+<li><a href="#summary" id="summary_toc">1. Design Overview</a></li>
+<li><a href="#voice_coils" id="voice_coils_toc">2. Actuators</a></li>
+<li><a href="#disp_sensors" id="disp_sensors_toc">3. Displacement Sensors</a>
+  <ul><li><a href="#cap_probe" id="cap_probe_toc">3.1 Capacitance Probe</a></li></ul>
+  <ul><li><a href="#knife_edge" id="knife_edge_toc">3.2 Knife Edge Sensor</a></li></ul>
 </li>
-<li><a href="#disp_sensors" id="disp_sensors_toc">2. Displacement Sensors</a>
-  <ul><li><a href="#cap_probe" id="cap_probe_toc">2.1 Capacitance Probe</a></li></ul>
-  <ul><li><a href="#knife_edge" id="knife_edge_toc">2.2 Knife Edge Sensor</a></li></ul>
-</li>
-<li><a href="#probe_design" id="probe_design_toc">3. Confocal Probe</a></li>
-<li><a href="#flexure_design" id="flexure_design_toc">4. Flexure Stage</a></li>
-<li><a href="#system_analysis" id="system_analysis_toc">5. Analysis of Electromechanical System</a></li>
-<li><a href="#daq_design" id="daq_design_toc">6. Data Acquisition</a></li>
-<li><a href="#manuf_cal" id="manuf_cal_toc">7. Manufacturing and Testing</a></li>
+<li><a href="#probe_design" id="probe_design_toc">4. Confocal Probe</a></li>
+<li><a href="#flexure_design" id="flexure_design_toc">5. Flexure Stage</a></li>
+  <ul><li><a href="#flexure_design_translation" id="flexure_design_translation_toc">5.1 Translation Stage</a></li></ul>
+  <ul><li><a href="#flexure_design_tilt" id="flexure_design_tilt_toc">5.2 Tilt Stage</a></li></ul>
+<li><a href="#system_analysis" id="system_analysis_toc">6. Analysis of Electromechanical System</a></li>
+<li><a href="#daq_design" id="daq_design_toc">7. Data Acquisition</a></li>
+  <ul><li><a href="#control_architecture" id="control_architecture_toc">7.1 Control Architecture</a></li></ul>
+  <ul><li><a href="#software_architecture" id="software_architecture_toc">7.2 Software Architecture</a></li></ul>
 <li><a href="#meas_uncertainty" id="meas_uncertainty_toc">8. Measurement Uncertainty</a></li>
 
 </ul>
+<iframe scrolling='no' frameborder='0' allowfullscreen='true' src='https://www.3dcontentcentral.com/external-site-embed.aspx?format=3D&catalogid=171&modelid=1401523&width=250&height=250&edraw=true' name='PreviewFrame3D' id='PreviewFrame3D' width='400' height='355'></iframe><br/><a href='https://www.3dcontentcentral.com/download-model.aspx?catalogid=171&id=1401523'>Download</a>
 </div>
-	<h3 id="summary"><a href="#summary_toc">0. Summary</a></h3>
-	<p>Flexure based confocal scanning instrument for measuringthickenss of transparent plates</p>
-	<h3 id="voice_coils"><a href="#voice_coils_toc">1. Voice Coils</a></h3>
+	<h3 id="summary"><a href="#summary_toc">1. Design Overview</a></h3>
+	<p>
+	This document explains a stage mechanism which translates a glass sample perpendicular to the beam from a focus probe. 
+	The focus probe measures two distinct intensity peaks as the focused beam is reflected from the top and bottom surfaces of the sample. 
+	The displacement of the stage related to the intensity peaks is measured using a capacitance gauge. 
+	This measured displacement is corrected for the refractive index change from air to glass, and Abbe error. 
+	The resulting quantity represents an estimate of the sample thickness.
+	</p>
+	<h3 id="voice_coils"><a href="#voice_coils_toc">2. Actuators</a></h3>
 	<p> 
-	The designs below are both driven by voice coils. These are a type of linear motor that uses the Lorentz force to drive a stage.
+	The system is driven by a single voice coil. These are a type of linear motor that uses the Lorentz force to drive a stage.
 	Voice coil actuators are frictionless, have negligible hysteresis, and can be used to position a stage with extremely high precision.
 	Displacement can be up to several inches, and force generated ranges from ounces to hundreds of pounds. 
-	The coil used in these designs has a peak force of 9~lbf and maximum displacement of $\pm$ 0.12~inches. 
+	The coil used in these designs has a peak force of 9&nbsp;lbf and maximum displacement of \(\pm\) 0.12&nbsp;inches. 
 	There are multiple common designs but all of them operate on the same basic principles. 
 	Shown here is a 'moving coil' design.
 	</p>
-	<h4 id="vc_theory"><a href="#vc_theory_toc">1.1 Theory of Operation</a></h4>
 	<p>
 	The stationary assembly consists of a magnet mounted on a ferrous cup that helps guide the magnetic field. 
 	The moving assembly is a length of wire (the coil) tightly wound around a plastic 'spool'. 
 	Current travels through the wire perpendicular to the magnetic field, 
 	producing a force that acts on the moving assembly according to the formula \(\vec{F} = \vec{I}l \times \vec{B}\),
 	where \(\vec{F}\) is the force produced,  \(\vec{B}\) is the magnetic field strength, 
-	current in the wire is \(\vec{I}\), and \(l\) is the total length of wire. 
+	current in the wire is \(\vec{I}\), and \(l\) is the total length of wire
 	These relationships are shown in the first two figures.
 	</p>
+	<img src="../images/voice_coils.png">
 	<p>
 	In this formula the magnetic field and wire length terms are fixed, 
 	so the only way we can vary the actuator force is by changing the current going into the wire. 
@@ -58,22 +66,26 @@
 	These designs use a Texas Instruments OPA549SG3 power op amp to create an output current directly proportional to an input current. 
 	The design used is shown in Figure X. Current output for this circuit design is $$i = \frac{R_2}{R_5 (R_1+R_2)} V_i$$
 	</p>
-	<img src="../images/voice_coils.png">
 	<p>
 	The voice coil can also be analyzed as an electro-mechanical system consisting of an RLC circuit and spring-mass damper.
 	This will be done below after discussing the flexure assembly.
 	</p>
-	<h4 id="vc_circuit"><a href="#vc_circuit_toc">1.2 Driving Circuit</a></h4>
-	Two displacement sensors were used in these projects: 
-	<h3 id="disp_sensors"><a href="#disp_sensors_toc">2. Displacement Sensors</a></h3>
+	<h3 id="disp_sensors"><a href="#disp_sensors_toc">3. Displacement Sensors</a></h3>
 	<p>
+	Two displacement sensors were used: 
 	Lion Precision capacitance probes and homebrew knife-edge sensors.
+	</p>
+	<h4 id="cap_probe"><a href="#cap_probe_toc">3.1 Capacitance Probe</a></h4>
+	<p>
 	Capacitance probes use the definition of a classical parallel-plate capacitor, \(C = \frac{\epsilon A}{d}\), 
-	as a tool for measuring displacement. \(A\) is the sensor area, \(epsilon\) is the dielectric constant, 
+	as a tool for measuring displacement. \(A\) is the sensor area, \(\epsilon\) is the dielectric constant, 
 	and \(d\) is the distance between plates. This equation does not address the effects of stray capacitance, 
 	second-order effects, and other deviations from the ideal model. 
 	A guard electrode is used to deal with stray capacitance and collimate the electric field lines between probe and target, 
-	making the probe behave more closely to an ideal parallel plate capacitor (Figure). 
+	making the probe behave more closely to an ideal parallel plate capacitor (see the illustration below). 
+	</p>
+	<img src="../images/cap_probe.svg">
+	<p>
 	From the equation we can see that larger sensors will create greater changes in capacitance for a given distance. 
 	We are measuring distance indirectly via capacitance, so a quality calibration is important. 
 	For this application the dielectric is air and \(\epsilon\) is a function of temperature, pressure, and humidity. 
@@ -81,17 +93,191 @@
 	A well-designed capacitance sensor system will have a resolution of single-digit nanometers or better. 
 	This is not the precision of the system - linearity, noise, environmental effects, 
 	and misalignment must all be considered when evaluating measurement uncertainty. 
-	The extremely high resolution and non-contact nature of capacitance probes makes the ideal for closed loop control of short travel micro-positioning systems. 
-	The probes used here have a range of 500~\textmu m and resolution of 10~nm at 15~kHz.
+	The extremely high resolution and non-contact nature of capacitance probes makes them ideal
+	for closed loop control of short travel micro-positioning systems. 
+	The probes used here have a range of 500&nbsp;\(\mu\)m and resolution of 10&nbsp;nm at 15&nbsp;kHz.
 	</p>
-	<img src="../images/cap_probe.svg">
-	<h4 id="cap_probe"><a href="#cap_probe_toc">2.1 Capacitance Probe</a></h4>
-	<h4 id="knife_edge"><a href="#knife_edge_toc">2.2 Knife Edge Sensor</a></h4>
-	<h3 id="probe_design"><a href="#probe_design_toc">3. Confocal Probe Sensor</a></h3>
-	<h3 id="flexure_design"><a href="#flexure_design_toc">4. Flexure Stage</a></h3>
+	<h4 id="knife_edge"><a href="#knife_edge_toc">3.2 Knife Edge Sensor</a></h4>
+	<img src="../images/knife_edge_overview.png">
+	<p>
+	Optical knife edge sensors (OKES) are cheap and reasonably precise position sensors that are 
+	becoming more common in precision control applications.
+	There are various designs, this one uses a cheap off-the-shelf photointerrupter.
+	These are commonly used as on/off switches or for rough position control in devices such as printers.
+	Despite their intended use as on/off switches, if a knife-edge is used to gradually obstruct the photodiode
+	then the voltage will slowly drop. This voltage drop is nonlinear at the extremes
+	but reasonably linear in the center.
+	</p>
+	<img src="../images/knife_edge_linearity.png">
+	<p> If only the center of the range is used and the device is carefully calibrated
+	measurements with sub-micrometer precision can be obtained. 
+	One problem with this sensor is the relative short linear range.
+	This can be mitaged by using an angled knife edge, such as an exacto hobby knife.
+	This increases the linear range, but also creates even more reliance on good calibration,
+	as well as knife-edge quality. Because of this the sensor assembly is very sensitive to physical disturbance.
+	For this system xacto blades were used to increase the usable range.
+	The sensor was calibrated using a capacitance probe as the reference.
+	</p>
+	<img src="../images/knife_edge_angled.png">
+	<h3 id="probe_design"><a href="#probe_design_toc">4. Confocal Probe Sensor</a></h3>
+	<img src="../images/confocal_probe.png">
+	<p>
+	This monochromatic confocal probe works by measuring how much light is reflected from the glass specimen.
+	If everything in the illustration is held fixed except for the glass plate and the plate is moved to the left or right, 
+	the amount of light reflected from the plate will be maximum when the objective lens is focused on
+	the top or bottom surface of the plate.
+	This reflected light is measured by the photodetector, the double-pinhole subassembly exists to filter
+	stray light and increase the signal to noise ratio.
+	Typical output is shown below; the left peak is the bottom surfaace, and the right peak is the top surface.
+	</p>
+	<img src="../images/probe_output.png">
+	<h3 id="flexure_design"><a href="#flexure_design_toc">5. Flexure Stage</a></h3>
+	<h4 id="flexure_design_translation"><a href="#flexure_design_translation_toc">5.1 Translation Stage</a></h4>
+	<p>
+	The mechanism needs to translate with one degree of freedom, smoothly and with minimal deviation from a straight line.
+	A mechanism can have up to six degrees of freedom: linear translation in x, y, and z, as well as rotation about the x, y, and z axes.
+	The degrees of freedom a mechanism has are defined by Grublers equation, 
+	$$M_6=6(n-j-1) + \sum_{i=1}^j f_i$$
+	where \(n\) is the number of links in the mechanism, \(j\) is the number of joints, 
+	and \(f\) is the number of degrees of freedom at the \(i^{th}\) joint. Three options were considered, 
+	a simple two-bar linear spring, a four-bar compound linear spring, and a double-compound linear spring.
+	Simple linear springs have one degree of freedom when considered as planar mechanisms
+	but are overconstrained when analyzed as 6 dof mechanisms (due to out of plane motions that become possible),
+	with a mobility of -2.
+	The drawbacks of the two-bar linear spring can be outweighted by the simple design and ease of manufacture,
+	but the error introduced is too much for this use case.
+	Double-compound linear springs eliminate the overconstraint problem, but now we have a mechanism with \(M=2\).
+	The double-compound rectilinear spring is much more complex than the previous choices, 
+	but has a mobility of \(M=1\). This guarantees true linear motion.
+	The design used for this system is the double-compound rectilinear spring, shown schematically below.
+	The translation stage has a range of 2.8&nbsp;mm.
+	</p>
+	<img src="../images/translation_flexure.png">
+	<p>
+	</p>
+	<h4 id="flexure_design_tilt"><a href="#flexure_design_tilt_toc">5.2 Tilt Stage</a></h4>
+	<img src="../images/tilt_flexure.png">
+	<p>
+	A tip-tilt stage for fine alignment of the sample is mounted on top of the linear translation stage.
+	the actuators for this stage are two screws preloaded against bent flexure leaves.
+	The system pivots around a screw at the corner of the stage farthest from the leaves.
+	The range is found by measuring the largest posible z-movement.
+	$$z = atan \left( \frac{z}{x}\right)=atan \left( \frac{3}{63}\right)=2.7^\circ$$
+	Resolution can be found by assuming that 1/4 of one screw turn is the finest adjustment possible.
+	An M4 machine screw has a pitch of 0.7&nbsp;mm, so \(\delta z = 0.25 z = 0.175 \)&nbsp;mm. 
+	$$\delta z = atan \left( \frac{0.175}{63} \right) = 0.16^\circ$$
+	</p>
 	<h3 id="system_analysis"><a href="#system_analysis_toc">5. Analysis of Electromechanical System</a></h3>
+	<h4>Electrical</h4>
+	<p>
+	The main point of concern with the electrical system is possible uncertainty contributions
+	from the digital-to-analog and analog-to-digital converters, and the maximization of sample rate.
+	The voltage resolution of an ADC is represented by the measurement range divided by the number of intervals.
+	For a 12-bit ADC, which is what the MyRIO has, the capacitance probe resolution is:
+	$$\frac{500 \ \mu m}{2^{12}}=122 \ nm$$
+	The voice coil is driven by a signal ranging from 0-5&nbsp;:
+	$$\frac{5 V}{2^{12}}=1.22 \ mV$$
+	</p>
+	<h4>Mechanical</h4>
+	<p>
+	The mechanical transfer function can be expressed as a lumped parameter model:
+
+	$$\frac{X(s)}{F(s)}=\frac{1}{m_{eq}s^2+b_{eq}s+k_{eq}}$$
+
+	where \(k_{eq}, b_{eq}\), and \(m_{eq}\) are the equivalent stiffness, damping, and mass for the system.
+	This model can be derived using Lagrange's equation. 
+	Several examples are available in the book Flexures, by Stuart Smith.
+	We are only interested in the stiffness, natural frequency, and maximum displacement of the system;
+	we will neglect calculating damping here. Since we know:
+	$$\omega_n = \sqrt \frac{k_{eq}}{m_{eq}}$$
+	finding the equivalent mass and stiffness will provide the natural frequency.
+	From the Lagrange analysis:
+	$$m_{eq} = m_A + m_B/2$$
+	$$k_{eq} = \frac{4k}{L^2}$$
+	The linear stiffness of one flexure leaf is
+	$$k_\delta = \frac{12EI}{L^3}$$
+	Throwing all of this together we find an equivalent moving mass just under half a kilogram,
+	a stiffness of 30 \(\frac{N}{m}\), and a natural frequency of about 40&nbsp;Hz.
+	</p>
 	<h3 id="daq_design"><a href="#daq_design_toc">6. Data Acquisition</a></h3>
-	<h3 id="manuf_cal"><a href="#manuf_cal_toc">7.Manufacturing and Testing</a></h3>
+	<h4 id="control_architecture"><a href="#control_architecture_toc">5.2 Control Architecture</a></h4>
+	<img src="../images/control_architecture.png">
+	<p>
+	The instrument operates via open-loop control. 
+	When a measurement begins the LabVIEW RT system sends a ramp voltage to the current amplifier.
+	The output current drives the voice coil, which applies a force to the flexure system.
+	As the flexure moves through a ramp displacement the intensity of light seen by the confocal probe varies,
+	giving two peaks.
+	The laser intensity and flexure displacement data are both passed to the real time system,
+	which calculates the distance between the peaks.
+	<h4 id="software_architecture"><a href="#software_architecture_toc">7.2 Software Architecture</a></h4>
+	<img src="../images/software_architecture.png">
+	<p>
+	<h4>Desktop computer:</h4>
+	<ul>
+		<li>Written as a state machine</li>
+		<li>Sends commands to RT system and monitors data acquisition state by Network Variable</li>
+		<li>Responsible for high-level control and final measurement calculation,
+		    the measurement algorithm lives here</li>
+		<li>Starting a measurement triggers a ramp voltage from the RT system</li>
+		<li>While the RT and FPGA systems complete data acquisition the deskop waits
+		    for a notification that data has been acquired and saved to disk</li>
+		<li>Once that notification is received the data is read from RT memory
+		    into the desktop computer's memory and the distance between peaks is calculated</li>
+		<li>The state machine then goes idle, waiting for configuration or the next measurement</li>
+		<li>The VI can hold N consecutive measurements and compute the average to reduce uncertainty</li>
+	</ul>
+	<h4>Real Time System:</h4>
+	<ul>
+		<li>One loop to read data from the FPGA and control the voice coil</li>
+		<li>One loop for writing data to disk as it is acquired</li>
+		<li>Data is passed from the acquisition to logging loop via lossless queue</li>
+		<li>When the queue is emptied the desktop VI is notified that it's okay to load data</li>
+	</ul>
+	<h4>FPGA</h4>
+	<ul>
+		<li>One loop, acquiring data at an extremely high sample rate</li>
+		<li>Measurement is sent from FPGA to RT via DMA FIFO to maximize sample rate
+		    while ensuring no data is lost</li>
+	</ul>
+	<h4>Measurement Algorithm</h4>
+	<p>
+	The input to this function is two arrays of data. One represnts z displacement of the flexure system,
+	the other represents intensity measured by the confocal probe. They are synchronized in time,
+	when plotted against one another they look like the final figure in Section 4.
+	The goal is to find the distance between intensity peaks.
+	</p>
+	<ol>
+		<li>Block average the input to reduce overall size of dataset</li>
+		<li>Boxcar average the input to reduce measurement noise</li>
+		<li>Send pre-processed intensity array to the Peak Detector VI</li>
+		<li>Use indices of intensity peaks to find x-position of peaks</li>
+		<li>\(z_2-z_1=t\)</li>
+	</ol>
+	Code is available at 
+  	<a href="https://github.com/AlexanderBlum/Confocal-Probe" >Confocal Probe Github</a>
+	</p>
 	<h3 id="meas_uncertainty"><a href="#meas_uncertainty_toc">8. Measurement Uncertainty</a></h3>
+	<img src="../images/uncertainty_inputs.png">
+	<p>
+	All contributions are evaluated as Type B. The driving sources of uncertainty are
+	ADC/DAC resolution, angular alignment of stage, electrical noise, and Abbe error.
+	The contribution of Abbe error was minimized by moving the displacement sensor
+	as close as possible to the displacement axis, measuring (and correcting) angular
+	error in z-axis translation with an autocollimator,
+	and using a reference sample of known thickness to calibrate out remaining Abbe error.
+	ADC resolution for the confocal probe is particularly problematic because
+	the signal to noise ratio is low. This is mitigated by taking extremely large amounts
+	of data near the intensity peaks and averaging to remove noise.
+	Thermal expansion can be neglected over the time period of one measurement.
+
+	Uncertainty is calculated as the root sum square of the individual contributions.
+	With a coverage factor of \(k=2\), the expanded uncertainty is:
+	\begin{align}
+	U &= \sqrt{u_{cp} + u_{\theta} + u_{vc} + u_{pd}} \\
+	t &= (z_2-z_1) \pm kU \\
+	t &= \Delta Z \pm 2 (0.93) \ \mu m \\
+	\end{align}
+	</p>
 </body>
 </html>
